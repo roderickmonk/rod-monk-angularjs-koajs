@@ -1,0 +1,10 @@
+# Untracked files & directories
+archive/
+bower_components/
+Data/
+DB/
+node_modules/
+SampleDocuments/
+.DS_Store
+*/.DS_Store
+.DS_Store?
