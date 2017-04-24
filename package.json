@@ -47,7 +47,7 @@
     "url": "^0.10.3"
   },
   "engines": {
-    "node": "0.12.2"
+    "node": "7.8.0"
   },
   "repository": {
     "type": "git",
@@ -55,6 +55,8 @@
   },
   "keywords": [
     "node",
+    "AngularJS",
+    "KoaJS",
     "heroku",
     "tennis"
   ],
