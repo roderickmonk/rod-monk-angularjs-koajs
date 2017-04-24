@@ -12,8 +12,7 @@ The goals of the site are the following:
 <li>Provide an application form for new members.</li>
 <li>A means for existing members to renew their membership.</li>
 <li>A means to distinguish executive members (who will be given an extra range of privileges).</li>
-<li>A means for the membership to review recent eBlasts.</li>
-<li>A new <b>TennisBC Export</b> function: this will allow a member of the executive to export the membership list to TennisBC (required once per year).</li>
+<li>A new <b>TennisBC Export</b> function: this allows a member of the executive to export the membership list to TennisBC (required once per year).</li>
 <li>A new <b>Fee Accounting</b> function: When applying, will allow a member to specify other members within the same family; this feature will allow the site to auto-determine each family's yearly fees.</li>
 <li>A new <b>Document Management</b> function: members of the executive will be able to add documents to a document repository (e.g. minutes of meetings, club bylaws, etc.).  The general membership will be able to view these documents.</li>
 <li>A new <b>News Management</b> function: members of the executive will be able to add news items to the website (typically club successes in league play).  The general membership will be able to view these news items.  A news item consists of text and pictures.  They are to be displayed in the website in reverse chronological order.</li>
@@ -21,12 +20,11 @@ The goals of the site are the following:
 </ol>
 
 ## Technologies
-NodeJS, KoaJS, AngularJS, Bootstrap, MongoDB, Mongoose, Git, GitHub, Gulp, and several npm packages (jwt-simple, bcrypt, async, gridfs-stream, moment, etc.).
+NodeJS 7.8+, KoaJS, AngularJS, Bootstrap, MongoDB, Mongoose, Git, GitHub, Gulp, and several npm packages (jwt-simple, bcrypt, async, gridfs-stream, moment, etc.).
 
 ## Application Notes
 <ol>
 <li>Full access to the site requires the user to register a password and identify themselves (first and last name, postal code, date of birth, etc.).  Once logged in, the member can then search the membership database, view historical eBlasts, renew their membership, etc.</li>
-<li>eBlasts are sent out from the club's gmail address.  The server (NodeJS) queries Google's repository of eBlasts for the most recent and then displays them in reverse chronological order.  Once collected, the server caches the eBlasts for a time.  This cache is occassionally refreshed.</li>
 </ol>
 
 ## Application ToDo List
