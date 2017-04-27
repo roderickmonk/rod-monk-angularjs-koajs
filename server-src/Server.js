@@ -10,11 +10,11 @@ const ObjectID = require('mongodb').ObjectID;
 const moment = require('moment');
 const _ = require('lodash');
 const assert = require('assert');
-const ttcDB = require('../server-src/ttcDB');
-const Track = require('../server-src/ttcTrack');
-const GridFS = require('../server-src/ttcGridFS');
-const MailChimp = require('./ttcMailChimp');
-const secretJwtKey = 'secret';
+const DB = require('../server-src/DB');
+const FogBugz = require('./FogBugz');
+const GridFS = require('./GridFS');
+const MailChimp = require('./MailChimp');
+const dotenv = require('dotenv').config();
 
 const ApiError = require('./api-error');
 const serve = require('koa-static');
@@ -41,40 +41,40 @@ app.use(async (ctx, next) => {
 });
 
 router.get('/member/count', async (ctx, next) =>
-    await ttcDB.countMembers()
+    await DB.countMembers()
         .then(memberCount => ctx.body = memberCount)
         .catch(ctx.throw));
 
 router.get('/member/email-addresses', async (ctx, next) =>
-    await ttcDB.getAllEmailAddresses()
+    await DB.getAllEmailAddresses()
         .then(emailaddresses => ctx.body = emailaddresses)
         .catch(ctx.throw));
 
 router.get('/member', async (ctx, next) =>
-    await ttcDB.authorizeMember(jwt.decode(ctx.request.header['x-auth'], secretJwtKey)._id)
-        .then(ttcDB.getMembers)
+    await DB.authorizeMember(jwt.decode(ctx.request.header['x-auth'], process.env.SECRET_JWT_KEY)._id)
+        .then(DB.getMembers)
         .then(members => ctx.body = members)
         .catch(ctx.throw));
 
 router.get('/member/:id', async (ctx, next) =>
-    await ttcDB.findMember(jwt.decode(ctx.params.id, secretJwtKey)._id)
-        .then(member => ctx.body = member)
+    await DB.findMember(jwt.decode(ctx.params.id, secretJwtKey)._id)
+        .then(member => { console.log(member), ctx.body = member; })
         .catch(ctx.throw));
 
 router.post('/member/login', async (ctx, next) =>
-    await ttcDB.loginMember(ctx.request.body)
+    await DB.loginMember(ctx.request.body)
         // Return a JWT token - required for 'Members Only'
-        .then(member => ctx.body = { jwt: jwt.encode({ _id: member._id }, secretJwtKey), exec: member.exec })
+        .then(member => ctx.body = { jwt: jwt.encode({ _id: member._id }, process.env.SECRET_JWT_KEY), exec: member.exec })
         .catch(ctx.throw));
 
 router.post('/member/signup', async (ctx, next) =>
-    await ttcDB.signupMember(ctx.request.body)
-        .then(member => ctx.body = { jwt: jwt.encode({ _id: member._id }, secretJwtKey), exec: member.exec })
+    await DB.signupMember(ctx.request.body)
+        .then(member => ctx.body = { jwt: jwt.encode({ _id: member._id }, process.env.SECRET_JWT_KEY), exec: member.exec })
         .catch(ctx.throw));
 
 router.put('/member/:id', async (ctx, next) => {
-    const member_id = jwt.decode(ctx.params.id, secretJwtKey)._id;
-    await ttcDB.persistMemberChange(ctx.request.body)
+    const member_id = jwt.decode(ctx.params.id, process.env.SECRET_JWT_KEY)._id;
+    await DB.persistMemberChange(ctx.request.body)
         .then(member => ctx.body = member)
         .catch(ctx.throw);
 });
@@ -84,12 +84,12 @@ router.post('/member/', async (ctx, next) => {
     let member = _.assign(ctx.request.body);
 
     member = ctx.request.body;
-    await ttcDB.duplicateCheck(member)
+    await DB.duplicateCheck(member)
         .catch(ctx.throw);
 
     member.password = bcrypt.hashSync(member.password);
 
-    await ttcDB.saveNewApplicant(member)
+    await DB.saveNewApplicant(member)
         .then(member => ctx.body = member)
         .catch(ctx.throw);
 });
@@ -101,7 +101,7 @@ router.put('/member/:id/change-password', async (ctx, next) => {
     member._id = jwt.decode(ctx.request.header['x-auth'], secretJwtKey)._id;
     member.password = bcrypt.hashSync(member.password);
 
-    await ttcDB.persistMemberChange(member)
+    await DB.persistMemberChange(member)
         .then(member => ctx.body = member)
         .catch(ctx.throw);
 });
@@ -111,7 +111,7 @@ router.get('/newsitem/objectid', async (ctx, next) =>
 
 router.get('/newsitem', async (ctx, next) =>
 
-    await ttcDB.getNewsItems()
+    await DB.getNewsItems()
         .then(newsItems => ctx.body = newsItems)
         .catch(ctx.throw));
 
@@ -144,6 +144,8 @@ router.get('/newsitem/image-upload', async (ctx, next) => {
         /* Temporary location of our uploaded file */
         const temp_path = this.openedFiles[0].path;
         const file_name = this.openedFiles[0].name;
+        console.log("request.headers['newsitemid']: ", ctx.request.header['newsitemid']);
+        console.log("request.headers: ", JSON.stringify(ctx.request.headers, null, 4));
         GridFS.saveFileToDb(this.openedFiles[0].path, this.openedFiles[0].name, 'newsitem', ctx.request.header['newsitemid'])
             .then(() => ctx.status = 200)
             .catch(ctx.throw);
@@ -152,20 +154,20 @@ router.get('/newsitem/image-upload', async (ctx, next) => {
 
 router.delete('/newsitem/:id', async (ctx, next) =>
 
-    await ttcDB.removeNewsItem(ctx.params.id)
+    await DB.removeNewsItem(ctx.params.id)
         .then(GridFS.removeNewsItemFiles)
         .then(() => ctx.status = 200)
         .catch(ctx.throw));
 
 router.post('/newsitem/publish', async (ctx, next) =>
 
-    await ttcDB.saveNewsItem(ctx.request.body)
+    await DB.saveNewsItem(ctx.request.body)
         .then(newsItem => ctx.body = newsItem)
         .catch(ctx.throw));
 
 app.use(router.routes());
 
-app.listen(process.env.PORT || 3000);
+const port = process.env.PORT || 3000;
+app.listen(port);
 
-Track.InfoOnly('TTC Server Started');
-console.log('Started: ', process.env.PORT);
+console.log('Server listening on Port: ', port);

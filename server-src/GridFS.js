@@ -8,8 +8,6 @@ const async = require('async');
 const _ = require('lodash');
 const assert = require('assert');
 
-
-//let Schema = mongoose.Schema;
 const conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
 

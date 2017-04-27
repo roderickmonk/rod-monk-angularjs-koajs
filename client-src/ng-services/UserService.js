@@ -13,9 +13,8 @@ const isLocalStorageSupported = () => {
 }
 
 // UserService provides a means for the controllers to share user login status and user role
-angular.module('ttc').factory('UserService', ['$log', '$cookies', 'deviceDetector', '$window', function ($log, $cookies, deviceDetector, $window) {
+angular.module('ttc').factory('UserService', ['$cookies', '$window', function ($cookies, $window) {
 
-	// var cookieCapable = (deviceDetector.os == 'mac' && deviceDetector.browser == 'chrome');
 	let cookieCapable = false;
 
 	let JWT;
@@ -29,9 +28,6 @@ angular.module('ttc').factory('UserService', ['$log', '$cookies', 'deviceDetecto
 		JWT = localStorage.getItem('JWT');
 		exec = localStorage.getItem('exec');
 	}
-
-	$log.info('JWT: ', JWT);
-	$log.info('exec: ', exec);
 
 	return {
 		loggedIn: (privileges) => {

@@ -1,6 +1,6 @@
 "use strict";
 
-app.config(['$routeProvider', function ($routeProvider, $scope)
+angular.module('ttc').config(['$routeProvider', function ($routeProvider, $scope)
 	{
 		$routeProvider.when('/Home', {
 				templateUrl: '/client-build/ng-components/Home/Home.html',

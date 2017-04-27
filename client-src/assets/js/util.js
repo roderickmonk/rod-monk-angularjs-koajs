@@ -1,15 +1,18 @@
 "use strict";
 
-function normalizePhoneNumber(phonenumber) {
+		// Normalize to the form 999-999-8888
+export function normalizePhoneNumber(phonenumber) {
+
+	var phoneDigits = '';
+
 	if (phonenumber) {
-		// Normalize to the form 999-999-9999
-		var digitsOnly = "";
+
 		for (var i = 0; i < phonenumber.length; ++i)
 			if (phonenumber.charAt(i) >= '0' && phonenumber.charAt(i) <= '9')
-				digitsOnly += phonenumber[i];
-		if (digitsOnly.length != 10)
+				phoneDigits += phonenumber[i];
+		if (phoneDigits.length != 10)
 			return phonenumber;	// Leave things untouched
 		else
-			return digitsOnly.slice(0, 3) + '-' + digitsOnly.slice(3, 6) + '-' + digitsOnly.slice(6);
+			return phoneDigits.slice(0, 3) + '-' + phoneDigits.slice(3, 6) + '-' + phoneDigits.slice(6);
 	}
 };

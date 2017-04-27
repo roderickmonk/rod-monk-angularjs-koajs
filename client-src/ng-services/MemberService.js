@@ -1,7 +1,8 @@
 "use strict";
 
-angular.module('ttc').factory('MemberService', ['$http', 'UserService', '$log', 'deviceDetector',
-	function ($http, UserService, $log, deviceDetector) {
+const util = require ('../assets/js/util.js');
+
+angular.module('ttc').factory('MemberService', ['$http', 'UserService',	function ($http, UserService) {
 
 		function httpHeaders() {
 			return {
@@ -22,8 +23,8 @@ angular.module('ttc').factory('MemberService', ['$http', 'UserService', '$log', 
 						for (let i = 0; i < data.length; ++i) {
 							data[i].firstname = _.capitalize(data[i].firstname);
 							data[i].familyname = _.capitalize(data[i].familyname);
-							data[i].primaryphone = normalizePhoneNumber(data[i].primaryphone);
-							data[i].alternativephone = normalizePhoneNumber(data[i].alternativephone);
+							data[i].primaryphone = util.normalizePhoneNumber(data[i].primaryphone);
+							data[i].alternativephone = util.normalizePhoneNumber(data[i].alternativephone);
 						}
 						return data;
 					}),

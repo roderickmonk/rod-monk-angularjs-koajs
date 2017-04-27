@@ -1,10 +1,8 @@
-var https = require('https');
-var md5 = require('md5');
-var Track = require('../server-src/ttcTrack');
-
-var MailChimpHostName = 'us12.api.mailchimp.com';
-var MailChimpMembersPath = 'secret';
-var MailChimpAuthorization = 'secret';
+const https = require('https');
+const md5 = require('md5');
+const FogBugz = require('../server-src/FogBugz');
+require('dotenv').config();
+const MailChimpHostName = 'us12.api.mailchimp.com';
 
 const readResponseBody = (response) => {
 	response.setEncoding('utf8');
@@ -21,7 +19,7 @@ const readResponseBody = (response) => {
 	});
 }
 
-addMember = (emailaddress, FNAME, LNAME) => {
+const addMember = (emailaddress, FNAME, LNAME) => {
 
 	const subscriber = JSON.stringify({
 		'email_address': emailaddress,
@@ -33,11 +31,11 @@ addMember = (emailaddress, FNAME, LNAME) => {
 	});
 
 	const https_options = {
-		hostname: MailChimpHostName,
-		path: MailChimpMembersPath,
+		hostname: 'us12.api.mailchimp.com',
+		path: process.env.MAIL_CHIMP_MEMBERS_PATH,
 		method: 'POST',
 		headers: {
-			'Authorization': MailChimpAuthorization,
+			'Authorization': process.env.MAIL_CHIMP_AUTHORIZATION,
 			'Content-Type': 'application/json',
 			'Content-Length': subscriber.length
 		}
@@ -49,12 +47,12 @@ addMember = (emailaddress, FNAME, LNAME) => {
 			readResponseBody(res)
 				.then(body => {
 					if (res.Status < 200 || res.Status >= 300)
-						Track.InfoOnly('MailChimp API addMember', 'response.Status: ' + res.statusCode + ', response.Body: ' + body);
+						FogBugz.InfoOnly('MailChimp API addMember', 'response.Status: ' + res.statusCode + ', response.Body: ' + body);
 				});
 		});
 
 		req.on('error', (err) => {
-			Track.Warning('MailChimp API addMember Warning', e.message);
+			FogBugz.Warning('MailChimp API addMember Warning', e.message);
 		});
 
 		req.write(subscriber);

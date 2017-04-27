@@ -1,11 +1,11 @@
 "use strict";
 
 // Join Controller
-angular.module('ttc').controller('NewMembershipController', ['$scope', 'placesService', '$modalInstance', '$log', '$window', '$modal', 'MemberService',
-function ($scope, placesService, $modalInstance, $log, $window, $modal, MemberService) {
+angular.module('ttc').controller('NewMembershipController', ['$scope', 'placesService', '$modalInstance', '$window', '$modal', 'MemberService',
+	function ($scope, placesService, $modalInstance, $window, $modal, MemberService) {
 
-		$scope.TTCDebug				= false;
-	
+		$scope.TTCDebug = false;
+
 		$scope.new_applicant = true;
 		$scope.member = {};
 		// Default the checkboxes to unchecked
@@ -55,9 +55,7 @@ function ($scope, placesService, $modalInstance, $log, $window, $modal, MemberSe
 			});
 
 			modalInstance.result.then(function () {
-				$log.info('Modal closed at: ' + new Date());
 			}, function () {
-				$log.info('Modal dismissed at: ' + new Date());
 			});
 		};
 
@@ -72,15 +70,12 @@ function ($scope, placesService, $modalInstance, $log, $window, $modal, MemberSe
 			});
 
 			modalInstance.result.then(function () {
-				$log.info('Modal closed at: ' + new Date());
 			}, function () {
-				$log.info('Modal dismissed at: ' + new Date());
 			});
 		};
 
 		// Opens the Mission & Values modal
 		$scope.openPhotographConsent = function () {
-			$log.info('Open Modal');
 			var modalInstance = $modal.open({
 				templateUrl: '/client-build/ng-templates/photograph-consent.html',
 				controller: 'PhotographConsentController',
@@ -90,15 +85,12 @@ function ($scope, placesService, $modalInstance, $log, $window, $modal, MemberSe
 			});
 
 			modalInstance.result.then(function () {
-				$log.info('Modal closed at: ' + new Date());
 			}, function () {
-				$log.info('Modal dismissed at: ' + new Date());
 			});
 		};
 
 		// Open the Fee Structure modal
 		$scope.openFeeStructure = function () {
-			$log.info('Open Modal');
 			var modalInstance = $modal.open({
 				templateUrl: '/client-build/ng-templates/fees.html',
 				controller: 'NewMembershipFeeStructureController',
@@ -108,18 +100,16 @@ function ($scope, placesService, $modalInstance, $log, $window, $modal, MemberSe
 			});
 
 			modalInstance.result.then(function () {
-				$log.info('Modal closed at: ' + new Date());
 			}, function () {
-				$log.info('Modal dismissed at: ' + new Date());
 			});
 		};
-}]);
+	}]);
 
 angular.module('ttc')
 	.controller('NewMembershipFeeStructureController', ['$scope', '$modalInstance',
-	function ($scope, $modalInstance) {
+		function ($scope, $modalInstance) {
 
 			$scope.Close = function () {
 				$modalInstance.dismiss('cancel');
 			};
-	}]);
+		}]);

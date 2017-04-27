@@ -1,5 +1,7 @@
 "use strict";
 
+const moment = require('moment');
+
 /*
  * Linked List implementation in JavaScript
  * Copyright (c) 2009 Nicholas C. Zakas
@@ -63,9 +65,9 @@ LinkedList.prototype = {
 
 		//create a new item object, place data in
 		var node = {
-				data: data,
-				next: null
-			},
+			data: data,
+			next: null
+		},
 
 			//used to traverse the structure
 			current;
@@ -244,195 +246,194 @@ function CountTotalInSublists(listOfLists) {
 	return count;
 }
 
-angular.module('ttc')
-	.controller('FeeManagementController', ['$scope', '$modalInstance', 'UserService', 'MemberService', '$log', '$window',
-	function ($scope, $modalInstance, UserService, MemberService, $log, $window) {
+angular.module('ttc').controller('FeeManagementController', ['$scope', '$modalInstance', 'UserService', 'MemberService', '$window',
+	function ($scope, $modalInstance, UserService, MemberService, $window) {
 
-			$scope.unpaidonly = false;
-			$scope.user = UserService;
+		$scope.unpaidonly = false;
+		$scope.user = UserService;
 
-			function GenerateAccounts(members) {
-				var listOfLists = new LinkedList;
+		function GenerateAccounts(members) {
+			var listOfLists = new LinkedList;
 
-				$scope.accounts = [];
+			$scope.accounts = [];
 
-				var StartOfSeason = moment('2017-04-01');
+			var StartOfSeason = moment('2017-04-01');
 
-				for (var i = 0; i < members.length; ++i) {
+			for (var i = 0; i < members.length; ++i) {
 
-					// Ensure that every member document has a 'paid' field
-					if (typeof members[i].paid === 'undefined') {
-						members[i].paid = false;
-					}
+				// Ensure that every member document has a 'paid' field
+				if (typeof members[i].paid === 'undefined') {
+					members[i].paid = false;
+				}
 
-					var FamilyMemberSubList;
-					var MemberSublist;
+				var FamilyMemberSubList;
+				var MemberSublist;
 
-					// Students get special treatment - give them their own sublist
-					if (members[i].student) {
-						MemberSublist = new LinkedList;
-						MemberSublist.add(members[i]);
-						listOfLists.add(MemberSublist);
+				// Students get special treatment - give them their own sublist
+				if (members[i].student) {
+					MemberSublist = new LinkedList;
+					MemberSublist.add(members[i]);
+					listOfLists.add(MemberSublist);
+				} else {
+
+					// Search to see if the member's familyemailaddress has already been allocated to a list
+					if (FamilyMemberSubList = findSubList(listOfLists, members[i].familyemailaddress)) {
+						// If so, the member should be added to that same sublist if not already there
+						AddMemberToSublist(FamilyMemberSubList, members[i]);
 					} else {
+						// Check to see if we need a new sublist
+						if (!(MemberSublist = findSubList(listOfLists, members[i].emailaddress))) {
+							MemberSublist = new LinkedList;
+							MemberSublist.add(members[i]);
 
-						// Search to see if the member's familyemailaddress has already been allocated to a list
-						if (FamilyMemberSubList = findSubList(listOfLists, members[i].familyemailaddress)) {
-							// If so, the member should be added to that same sublist if not already there
-							AddMemberToSublist(FamilyMemberSubList, members[i]);
-						} else {
-							// Check to see if we need a new sublist
-							if (!(MemberSublist = findSubList(listOfLists, members[i].emailaddress))) {
-								MemberSublist = new LinkedList;
-								MemberSublist.add(members[i]);
-
-								// Add the new sublist to the list of lists
-								listOfLists.add(MemberSublist);
-							}
-
-							// Include those members using the same emailaddress or familyemailaddress
-							for (var j = i + 1; j < members.length; ++j)
-								if (members[i].emailaddress.toLowerCase() === members[j].emailaddress.toLowerCase() ||
-									(members[i].familyemailaddress && members[i].familyemailaddress.toLowerCase() === members[j].emailaddress.toLowerCase()) ||
-									(members[j].familyemailaddress && (members[i].emailaddress.toLowerCase() === members[j].familyemailaddress.toLowerCase()))
-								) {
-									AddMemberToSublist(MemberSublist, members[j]);
-								}
+							// Add the new sublist to the list of lists
+							listOfLists.add(MemberSublist);
 						}
+
+						// Include those members using the same emailaddress or familyemailaddress
+						for (var j = i + 1; j < members.length; ++j)
+							if (members[i].emailaddress.toLowerCase() === members[j].emailaddress.toLowerCase() ||
+								(members[i].familyemailaddress && members[i].familyemailaddress.toLowerCase() === members[j].emailaddress.toLowerCase()) ||
+								(members[j].familyemailaddress && (members[i].emailaddress.toLowerCase() === members[j].familyemailaddress.toLowerCase()))
+							) {
+								AddMemberToSublist(MemberSublist, members[j]);
+							}
 					}
 				}
-				
-				console.log('Total Members: ', members.length);
-				console.log('Total sublists: ', listOfLists.size());
-				console.log('Total count in sub lists: ', CountTotalInSublists(listOfLists));
+			}
 
-				// Now create the accounts from the listOfLists
-				$scope.accounts = [];
-				for (var i = 0; i < listOfLists.size(); ++i) {
-					// The name of the oldest person is to be the name of the account
-					var oldest = 0;
-					for (var j = 1; j < listOfLists.item(i).size(); ++j)
-						if (listOfLists.item(i).item(j).dob < listOfLists.item(i).item(oldest).dob)
-							oldest = j;
+			console.log('Total Members: ', members.length);
+			console.log('Total sublists: ', listOfLists.size());
+			console.log('Total count in sub lists: ', CountTotalInSublists(listOfLists));
 
-						// If everyone in a sublist is flagged as paid, 
-						// then the Account as a whole is flagged as paid
-					var paid = true;
+			// Now create the accounts from the listOfLists
+			$scope.accounts = [];
+			for (var i = 0; i < listOfLists.size(); ++i) {
+				// The name of the oldest person is to be the name of the account
+				var oldest = 0;
+				for (var j = 1; j < listOfLists.item(i).size(); ++j)
+					if (listOfLists.item(i).item(j).dob < listOfLists.item(i).item(oldest).dob)
+						oldest = j;
+
+				// If everyone in a sublist is flagged as paid, 
+				// then the Account as a whole is flagged as paid
+				var paid = true;
+				for (var j = 0; j < listOfLists.item(i).size(); ++j) {
+					paid = paid && listOfLists.item(i).item(j).paid;
+				}
+
+				// Determine the fees for the account
+				var fees = 0;
+				fee_calculation: {
+					var adults = 0;
+					var juniors = 0;
+					var execs = 0; // Execs get a discount
+					var lifetimes = 0; // Lifetime members pay no fees
+
 					for (var j = 0; j < listOfLists.item(i).size(); ++j) {
-						paid = paid && listOfLists.item(i).item(j).paid;
+
+						// Students get special handling
+						if (listOfLists.item(i).item(j).student) {
+							fees = '105.00';
+							break fee_calculation;
+						}
+
+						// Younger than 18 is a junior
+						var dob = moment(listOfLists.item(i).item(j).dob, ['MM-DD-YYYY', 'YYYY-MM-DD']);
+						var diff = StartOfSeason.diff(dob, 'years');
+						if (diff < 18)
+							++juniors;
+						else
+							++adults;
+
+						if (Boolean(listOfLists.item(i).item(j).exec) && listOfLists.item(i).item(j).exec != 'lifetime')
+							++execs;
+
+						if (Boolean(listOfLists.item(i).item(j).exec) && listOfLists.item(i).item(j).exec == 'lifetime')
+							++lifetimes;
 					}
 
-					// Determine the fees for the account
-					var fees = 0;
-					fee_calculation: {
-						var adults = 0;
-						var juniors = 0;
-						var execs = 0; // Execs get a discount
-						var lifetimes = 0; // Lifetime members pay no fees
+					var SinglesFee = 246.75;
+					var CouplesFee = 388.50;
 
-						for (var j = 0; j < listOfLists.item(i).size(); ++j) {
-
-							// Students get special handling
-							if (listOfLists.item(i).item(j).student) {
-								fees = '105.00';
-								break fee_calculation;
-							}
-
-							// Younger than 18 is a junior
-							var dob = moment(listOfLists.item(i).item(j).dob, ['MM-DD-YYYY', 'YYYY-MM-DD']);
-							var diff = StartOfSeason.diff(dob, 'years');
-							if (diff < 18)
-								++juniors;
-							else
-								++adults;
-
-							if (Boolean(listOfLists.item(i).item(j).exec) && listOfLists.item(i).item(j).exec != 'lifetime')
-								++execs;
-
-							if (Boolean(listOfLists.item(i).item(j).exec) && listOfLists.item(i).item(j).exec == 'lifetime')
-								++lifetimes;
-						}
-
-						var SinglesFee = 246.75;
-						var CouplesFee = 388.50;
-
-						if (adults == 1) {
-							if (juniors == 0)
-								fees = SinglesFee;
-							else if (juniors == 1)
-								fees = 300.00
-							else if (juniors >= 2)
-								fees = 350.00
-						} else if (adults == 2) {
-							if (juniors == 0)
-								fees = CouplesFee;
-							else
-								fees = 450.00;
-						} else if (adults == 3) { // A junior will be 18 on April 1st
-							fees = 450.00;
-						} else {
-							console.log('adults, juniors, execs: ' + adults + ', ' + juniors + ', ' + execs);
-							fees = 'ERROR'; // We have a problem if here.
-						}
-
-						if (adults == 1 && lifetimes == 1) {
-							fees = 0;
-						} else if (adults == 2 && lifetimes == 1) {
+					if (adults == 1) {
+						if (juniors == 0)
 							fees = SinglesFee;
-						}
-
-						for (var exec_i = 0; exec_i < execs; ++exec_i)
-							fees -= SinglesFee / 2.0;
+						else if (juniors == 1)
+							fees = 300.00
+						else if (juniors >= 2)
+							fees = 350.00
+					} else if (adults == 2) {
+						if (juniors == 0)
+							fees = CouplesFee;
+						else
+							fees = 450.00;
+					} else if (adults == 3) { // A junior will be 18 on April 1st
+						fees = 450.00;
+					} else {
+						console.log('adults, juniors, execs: ' + adults + ', ' + juniors + ', ' + execs);
+						fees = 'ERROR'; // We have a problem if here.
 					}
 
-					// Only deal with dollars
-					fees = Math.round(fees);
-
-					// Create the tooltips for the account
-					var tooltip = "";
-					for (var j = 0; j < listOfLists.item(i).size(); ++j) {
-						tooltip += _.capitalize(listOfLists.item(i).item(j).firstname + ' ' +
-							listOfLists.item(i).item(j).familyname + ', DoB: ' +
-							listOfLists.item(i).item(j).dob);
-						if (j < listOfLists.item(i).size() - 1) tooltip += ' | '
+					if (adults == 1 && lifetimes == 1) {
+						fees = 0;
+					} else if (adults == 2 && lifetimes == 1) {
+						fees = SinglesFee;
 					}
 
-					var account = {
-						members: listOfLists.item(i).toArray(),
-						accountname: _.capitalize(listOfLists.item(i).item(oldest).familyname + ', ' + listOfLists.item(i).item(oldest).firstname),
-						emailaddress: listOfLists.item(i).item(oldest).emailaddress,
-						paid: paid,
-						fees: fees,
-						tooltip: tooltip
-					};
-					$scope.accounts.push(account);
+					for (var exec_i = 0; exec_i < execs; ++exec_i)
+						fees -= SinglesFee / 2.0;
 				}
-				$scope.accounts.sort(function (a, b) {
-					if (a.accountname > b.accountname) return 1;
-					if (a.accountname < b.accountname) return -1;
-					return 0;
+
+				// Only deal with dollars
+				fees = Math.round(fees);
+
+				// Create the tooltips for the account
+				var tooltip = "";
+				for (var j = 0; j < listOfLists.item(i).size(); ++j) {
+					tooltip += _.capitalize(listOfLists.item(i).item(j).firstname + ' ' +
+						listOfLists.item(i).item(j).familyname + ', DoB: ' +
+						listOfLists.item(i).item(j).dob);
+					if (j < listOfLists.item(i).size() - 1) tooltip += ' | '
+				}
+
+				var account = {
+					members: listOfLists.item(i).toArray(),
+					accountname: _.capitalize(listOfLists.item(i).item(oldest).familyname + ', ' + listOfLists.item(i).item(oldest).firstname),
+					emailaddress: listOfLists.item(i).item(oldest).emailaddress,
+					paid: paid,
+					fees: fees,
+					tooltip: tooltip
+				};
+				$scope.accounts.push(account);
+			}
+			$scope.accounts.sort(function (a, b) {
+				if (a.accountname > b.accountname) return 1;
+				if (a.accountname < b.accountname) return -1;
+				return 0;
+			});
+		}
+
+		MemberService.getAllMembers()
+			.then(function (data) {
+				$scope.members = data;
+				GenerateAccounts($scope.members);
+			})
+			.catch(function (err) {
+				$window.alert(err);
+			});
+
+		$scope.Toggle = function (account) {
+			for (var i = 0; i < account.members.length; ++i) {
+				account.members[i].paid = !account.paid;
+				MemberService.saveMember(account.members[i], function (err) {
+					if (err)
+						$window.alert(err);
 				});
 			}
+		}
 
-			MemberService.getAllMembers()
-				.then(function (data) {
-					$scope.members = data;
-					GenerateAccounts($scope.members);
-				})
-				.catch(function (err) {
-					$window.alert(err);
-				});
-
-			$scope.Toggle = function (account) {
-				for (var i = 0; i < account.members.length; ++i) {
-					account.members[i].paid = !account.paid;
-					MemberService.saveMember(account.members[i], function (err) {
-						if (err)
-							$window.alert(err);
-					});
-				}
-			}
-
-			$scope.Close = function () {
-				$modalInstance.dismiss('No');
-			}
-}]);
+		$scope.Close = function () {
+			$modalInstance.dismiss('No');
+		}
+	}]);

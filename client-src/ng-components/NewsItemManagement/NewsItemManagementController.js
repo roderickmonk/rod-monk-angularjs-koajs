@@ -1,15 +1,14 @@
 'use strict';
 
-angular.module('ttc')
-.controller('NewsItemManagementController', ['$scope', '$http', 'FileUploader', '$modalInstance', 'UserService', '$log', 'NewsItemService', '$window',
-function documentUploadController ($scope, $http, FileUploader, $modalInstance, UserService, $log, NewsItemService, $window) {
-	
+angular.module('ttc').controller('NewsItemManagementController', ['$scope', '$http', 'FileUploader', '$modalInstance', 'UserService', 'NewsItemService', '$window',
+	function documentUploadController($scope, $http, FileUploader, $modalInstance, UserService, NewsItemService, $window) {
+
 		$scope.newsItem = {};
-	
+
 		var uploader = $scope.uploader = new FileUploader({
 			url: '/api/newsitem/image-upload'
 		});
-	
+
 		// FILTERS
 		uploader.filters.push({
 			name: 'imageFilter',
@@ -54,20 +53,20 @@ function documentUploadController ($scope, $http, FileUploader, $modalInstance, 
 		uploader.onCompleteAll = function () {
 			console.info('onCompleteAll');
 		}
-	
-		NewsItemService.getNewObjectId ()
-			.then (function (newsitemid) {$scope.newsItem._id = newsitemid;})
+
+		NewsItemService.getNewObjectId()
+			.then(function (newsitemid) { $scope.newsItem._id = newsitemid; })
 			.catch($window.alert);
 
 		$scope.Publish = function () {
-			NewsItemService.publishNewsItem ($scope.newsItem)
-				.then (function () {$modalInstance.dismiss('Yes'); $window.alert ('Your News Item has been successfully published')})
-				.catch ($window.alert);
+			NewsItemService.publishNewsItem($scope.newsItem)
+				.then(function () { $modalInstance.dismiss('Yes'); $window.alert('Your News Item has been successfully published') })
+				.catch($window.alert);
 		}
 
 		$scope.Close = function () {
 			// Any errors are picked up by the server
-			NewsItemService.removeNewsItem ($scope.newsItem._id)
-				.finally ($modalInstance.dismiss('Yes'));
+			NewsItemService.removeNewsItem($scope.newsItem._id)
+				.finally($modalInstance.dismiss('Yes'));
 		}
-    }]);
+	}]);

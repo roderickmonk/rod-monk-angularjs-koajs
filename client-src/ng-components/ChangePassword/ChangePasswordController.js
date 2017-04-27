@@ -1,24 +1,21 @@
 "use strict";
 
 // Change Password Controller
-angular.module('ttc')
-	.controller('changePasswordController', ['$scope', 'UserService', '$modalInstance', '$window', '$log', 'MemberService', '$q',
-function ($scope, UserService, $modalInstance, $window, $log, MemberService, $q) {
+angular.module('ttc').controller('changePasswordController', ['$scope', 'UserService', '$modalInstance', '$window', 'MemberService',
+	function ($scope, UserService, $modalInstance, $window, MemberService) {
 
-			$scope.member = {};
+		$scope.member = {};
 
-			$scope.Save = function () {
-				MemberService.changePassword($scope.member)
-					.then(function () {
-						$modalInstance.close('Yes');
-						$window.alert('Your new password has been saved');
-					})
-					.catch(function (err) {
-						$window.alert(err);
-					});
-			};
+		$scope.Save = () => {
+			MemberService.changePassword($scope.member)
+				.then(() => {
+					$modalInstance.close('Yes');
+					$window.alert('Your new password has been saved');
+				})
+				.catch($window.alert);
+		};
 
-			$scope.Cancel = function () {
-				$modalInstance.dismiss('No');
-			};
-}]);
+		$scope.Cancel = () => {
+			$modalInstance.dismiss('No');
+		};
+	}]);
