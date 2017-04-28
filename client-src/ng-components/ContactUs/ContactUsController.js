@@ -6,6 +6,6 @@ angular.module('ttc')
 		$scope.executive = [];
 
 		$http.get('/client-build/ng-components/ContactUs/ttc_exec.json')
-			.then(response => $scope.executive = response.data);
+			.then(executive => $scope.executive = response.executive);
 
 	}]);

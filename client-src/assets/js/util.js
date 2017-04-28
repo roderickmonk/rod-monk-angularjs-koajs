@@ -7,7 +7,7 @@ export function normalizePhoneNumber(phonenumber) {
 
 	if (phonenumber) {
 
-		for (var i = 0; i < phonenumber.length; ++i)
+		for (let i = 0; i < phonenumber.length; ++i)
 			if (phonenumber.charAt(i) >= '0' && phonenumber.charAt(i) <= '9')
 				phoneDigits += phonenumber[i];
 		if (phoneDigits.length != 10)

@@ -5,6 +5,6 @@ angular.module('ttc').controller('SearchMembershipCtrl', ['$scope', 'MemberServi
 	function ($scope, MemberService, $window) {
 
 		MemberService.getAllMembers()
-			.then(data => $scope.members = data)
+			.then(members => $scope.members = members)
 			.catch($window.alert);
 	}]);

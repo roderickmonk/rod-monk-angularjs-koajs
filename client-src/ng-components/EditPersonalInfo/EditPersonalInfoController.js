@@ -10,15 +10,16 @@ angular.module('ttc').controller('editPersonalInfoCtrl', ['$scope', 'placesServi
 		$scope.places = placesService.get();
 		$scope.TTCDebug = false;
 
-		MemberService.getAllEmailAddresses()
-			.then(function (emailaddresses) { $scope.allemailaddresses = emailaddresses; })
-			.catch($window.alert);
-
 		MemberService.getMember()
 			.then(member => {
+				console.log('testing: ', member);
 				$scope.member = member;
 				$scope.confirmemailaddress = member.emailaddress;
 			})
+			.catch($window.alert);
+
+		MemberService.getAllEmailAddresses()
+			.then(emailaddresses => $scope.allemailaddresses = emailaddresses)
 			.catch($window.alert);
 
 		$scope.Save = () => {

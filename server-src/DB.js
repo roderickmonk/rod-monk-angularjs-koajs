@@ -70,21 +70,12 @@ const removeNewsItem = (newsitemid) => NewsItem.findOneAndRemove({ _id: newsitem
 
 const countMembers = () => new Promise((resolve) => Member.find().then(members => resolve(members.length)));
 
-const getMembers = () => Member.find({}, '-password');
+const getMembers = () => Member.find({}, '-_id -password');
 
-const getAllEmailAddresses = () =>
+const getAllEmailAddresses = () => Member.find()
+	.then(members => members.map(member => member.emailaddress));
 
-	new Promise((resolve, reject) =>
-		Member.find()
-			.then(members => {
-				let emailaddresses = [];
-				for (let i = 0; i < members.length; ++i)
-					emailaddresses.push(members[i].emailaddress);
-				resolve(emailaddresses);
-			})
-			.catch(reject));
-
-const findMember = (_id) => Member.findOne({ _id }, '-password');
+const findMember = (_id) => Member.findOne({ _id }, '-_id -password');
 
 // Make persistant changes to a member's information
 const persistMemberChange = (member) => Member.findByIdAndUpdate(member._id, member, MONGOOSE_UPDATE_OPTIONS);
@@ -152,13 +143,13 @@ const duplicateCheck = (member) => new Promise((resolve, reject) => {
 		.then(member => {
 			if (_.isEmpty(member)) {
 				// Not a duplicate
-				resolve (null);
+				resolve(null);
 			}
 			else {
 				reject(new Error('Our records show that you have already applied or that you are already a member.  ' +
 					'If you are already a member, please Login and renew your membership.  ' +
 					'Please contact the TTC webmaster if you cannot resolve the problem.'));
-			} 
+			}
 		})
 		.catch(reject);
 });

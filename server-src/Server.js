@@ -1,7 +1,6 @@
 "use strict";
+// General purpose modules
 const util = require('util');
-const http = require('http');
-const url = require("url");
 const path = require("path");
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jwt-simple');
@@ -10,18 +9,21 @@ const ObjectID = require('mongodb').ObjectID;
 const moment = require('moment');
 const _ = require('lodash');
 const assert = require('assert');
-const DB = require('../server-src/DB');
-const FogBugz = require('./FogBugz');
-const GridFS = require('./GridFS');
-const MailChimp = require('./MailChimp');
 const dotenv = require('dotenv').config();
 
-const ApiError = require('./api-error');
+// KoaJS packages
 const serve = require('koa-static');
 const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const json = require('koa-json');
+
+// Project specific modules
+const DB = require('./DB');
+const FogBugz = require('./FogBugz');
+const GridFS = require('./GridFS');
+const MailChimp = require('./MailChimp');
+const ApiError = require('./api-error');
 
 const app = new Koa();
 const router = new Router({ prefix: '/api' });
@@ -31,6 +33,7 @@ app.use(json());
 
 app.use(serve('.', { index: 'client-build/index.html' }));
 
+// Koa error handler
 app.use(async (ctx, next) => {
     try {
         await next();
@@ -57,7 +60,7 @@ router.get('/member', async (ctx, next) =>
         .catch(ctx.throw));
 
 router.get('/member/:id', async (ctx, next) =>
-    await DB.findMember(jwt.decode(ctx.params.id, secretJwtKey)._id)
+    await DB.findMember(jwt.decode(ctx.params.id, process.env.SECRET_JWT_KEY)._id)
         .then(member => { console.log(member), ctx.body = member; })
         .catch(ctx.throw));
 
@@ -98,7 +101,7 @@ router.put('/member/:id/change-password', async (ctx, next) => {
 
     let member = _.assign(ctx.request.body);
 
-    member._id = jwt.decode(ctx.request.header['x-auth'], secretJwtKey)._id;
+    member._id = jwt.decode(ctx.request.header['x-auth'], process.env.SECRET_JWT_KEY)._id;
     member.password = bcrypt.hashSync(member.password);
 
     await DB.persistMemberChange(member)

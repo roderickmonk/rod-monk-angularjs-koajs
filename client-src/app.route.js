@@ -2,6 +2,8 @@
 
 angular.module('ttc').config(['$routeProvider', function ($routeProvider, $scope)
 	{
+		console.log ('Testing.....');
+		
 		$routeProvider.when('/Home', {
 				templateUrl: '/client-build/ng-components/Home/Home.html',
 				controller: 'HomeController'

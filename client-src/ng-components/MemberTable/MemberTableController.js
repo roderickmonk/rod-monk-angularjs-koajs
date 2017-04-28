@@ -9,33 +9,30 @@ angular.module('ttc').controller('MemberTableController', ['$scope', 'MemberServ
 		$scope.allemailaddresses = [];
 
 		MemberService.getAllEmailAddresses()
-			.then(function (emailaddresses) { $scope.allemailaddresses = emailaddresses; })
+			.then(emailaddresses => $scope.allemailaddresses = emailaddresses)
 			.catch($window.alert);
 
 		MemberService.getAllMembers()
-			.then(function (data) { $scope.members = data; })
+			.then(members => $scope.members = members)
 			.catch($window.alert);
 
-		$scope.TogglePaid = function (member) {
+		$scope.TogglePaid = member => {
 			member.paid = !member.paid;
 			MemberService.saveMember(member)
 				.catch($window.alert);
 		}
 
-		$scope.ToggleStudent = function (member) {
+		$scope.ToggleStudent = member => {
 			member.student = !member.student;
 			MemberService.saveMember(member)
 				.catch($window.alert);
 		}
 
-		$scope.SelectExec = (member) =>
+		$scope.SelectExec = member =>
 			MemberService.saveMember(member)
 				.catch($window.alert);
 
-		$scope.UpdateFamilyEmailAddress = function (member) {
-			console.log(member);
-
-			console.log('UpdateFamilyEmailAddress: ', member.familyemailaddress);
+		$scope.UpdateFamilyEmailAddress = member => {
 
 			if (member.familyemailaddress == "" || $scope.allemailaddresses.indexOf(member.familyemailaddress) >= 0)
 				MemberService.saveMember(member)

@@ -9,46 +9,48 @@ angular.module('ttc').controller('renewMembershipCtrl', ['$scope', 'placesServic
 		$scope.places = placesService.get();
 		$scope.TTCDebug = false;
 
-		MemberService.getAllMembers()
-			.then(function (members) { for (var i = 0; i < members.length; ++i) $scope.allemailaddresses.push(members[i].emailaddress); })
+		MemberService.getAllEmailAddresses()
+			.then(emailaddresses => $scope.allemailaddresses = emailaddresses)
 			.catch($window.alert);
 
 		MemberService.getMember()
-			.then(function (member) {
+			.then(member => {
 				$scope.member = member;
 				$scope.confirmemailaddress = member.emailaddress;
 				$scope.member.student = false;
 				$scope.member.liabilityagreed = false;
 				$scope.member.communicationsagreed = false;
 				$scope.member.photoagreed = false;
-				$scope.member.joining_year = undefined;
 			})
 			.catch($window.alert);
 
-		$scope.Submit = function () {
+		$scope.Submit = () => {
 			MemberService.saveMember($scope.member)
-				.then(function () { $modalInstance.close('Yes'); $window.alert('Renewal Application Accepted.  All fees must be paid on or before March 31st.'); })
-				.catch(function (err) { $window.alert(err); });
+				.then(() => {
+					$modalInstance.close('Yes');
+					$window.alert('Renewal Application Accepted.  All fees must be paid on or before March 31st.');
+				})
+				.catch($window.alert);
 		}
 
-		$scope.Cancel = function () {
+		$scope.Cancel = () => {
 			$modalInstance.dismiss('No');
 		};
 
-		$scope.normalizeCanadianPostalCodes = function () {
+		$scope.normalizeCanadianPostalCodes = () => {
 			$scope.member.postcode = $scope.member.postcode.replace(' ', '').toUpperCase();
 		};
 
-		$scope.normalizePrimaryPhoneNumber = function () {
+		$scope.normalizePrimaryPhoneNumber = () => {
 			$scope.member.primaryphone = normalizePhoneNumber($scope.member.primaryphone);
 		};
 
-		$scope.normalizeAlternativePhoneNumber = function () {
+		$scope.normalizeAlternativePhoneNumber = () => {
 			$scope.member.alternativephone = normalizePhoneNumber($scope.member.alternativephone);
 		};
 
 		// Opens the Mission & Values modal
-		$scope.openReleaseOfLiability = function () {
+		$scope.openReleaseOfLiability = () => {
 			console.log('Open Modal');
 			var modalInstance = $modal.open({
 				templateUrl: '/client-build/ng-templates/release-of-liability-waiver-and-claims.html',
@@ -58,13 +60,11 @@ angular.module('ttc').controller('renewMembershipCtrl', ['$scope', 'placesServic
 				resolve: {}
 			});
 
-			modalInstance.result.then(function () {
-			}, function () {
-			});
+			//modalInstance.result.then(() => { }, () => { });
 		};
 
 		// Opens the Mission & Values modal
-		$scope.openCommunicationsConsent = function () {
+		$scope.openCommunicationsConsent = () => {
 			var modalInstance = $modal.open({
 				templateUrl: '/client-build/ng-templates/communications-consent.html',
 				controller: 'CommunicationsConsentController',
@@ -73,13 +73,11 @@ angular.module('ttc').controller('renewMembershipCtrl', ['$scope', 'placesServic
 				resolve: {}
 			});
 
-			modalInstance.result.then(function () {
-			}, function () {
-			});
+			//modalInstance.result.then(() => { }, () => { });
 		};
 
 		// Opens the Mission & Values modal
-		$scope.openPhotographConsent = function () {
+		$scope.openPhotographConsent = () => {
 			var modalInstance = $modal.open({
 				templateUrl: '/client-build/ng-templates/photograph-consent.html',
 				controller: 'PhotographConsentController',
@@ -88,13 +86,11 @@ angular.module('ttc').controller('renewMembershipCtrl', ['$scope', 'placesServic
 				resolve: {}
 			});
 
-			modalInstance.result.then(function () {
-			}, function () {
-			});
+			//modalInstance.result.then(() => { }, () => { });
 		};
 
 		// Opens the Mission & Values modal
-		$scope.openFeeStructure = function () {
+		$scope.openFeeStructure = () => {
 			var modalInstance = $modal.open({
 				templateUrl: '/client-build/ng-templates/fees.html',
 				controller: 'FeeStructureController',
@@ -103,9 +99,7 @@ angular.module('ttc').controller('renewMembershipCtrl', ['$scope', 'placesServic
 				resolve: {}
 			});
 
-			modalInstance.result.then(function () {
-			}, function () {
-			});
+			//modalInstance.result.then(() => { }, () => { });
 		};
 
 	}]);
@@ -114,7 +108,5 @@ angular.module('ttc')
 	.controller('FeeStructureController', ['$scope', '$modalInstance',
 		function ($scope, $modalInstance) {
 
-			$scope.Close = function () {
-				$modalInstance.dismiss('cancel');
-			};
+			$scope.Close = () => { $modalInstance.dismiss('cancel'); };
 		}]);

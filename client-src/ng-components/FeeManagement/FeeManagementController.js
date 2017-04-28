@@ -197,8 +197,8 @@ LinkedList.prototype = {
 function findSubList(listOfLists, emailaddress) {
 	if (emailaddress) {
 		// Search to see if the emailaddress has already been allocated to a list
-		for (var j = 0; j < listOfLists.size(); ++j) {
-			for (var k = 0; k < listOfLists.item(j).size(); ++k) {
+		for (let j = 0; j < listOfLists.size(); ++j) {
+			for (let k = 0; k < listOfLists.item(j).size(); ++k) {
 				if (listOfLists.item(j).item(k).emailaddress.toLowerCase() == emailaddress.toLowerCase() &&
 					!listOfLists.item(j).item(k).student) // students are always their own sublist
 				{
@@ -216,7 +216,7 @@ function AddMemberToSublist(SubList, member) {
 		return;
 
 	// Search to see if the emailaddress has already been allocated to a list
-	for (var i = 0; i < SubList.size(); ++i) {
+	for (let i = 0; i < SubList.size(); ++i) {
 		// If the member is already in the sublist or a student, then nothing to do
 		if (SubList.item(i)._id === member._id)
 			return;
@@ -228,12 +228,12 @@ function AddMemberToSublist(SubList, member) {
 
 function CountTotalInSublists(listOfLists) {
 	var count = 0;
-	for (var i = 0; i < listOfLists.size(); ++i) {
+	for (let i = 0; i < listOfLists.size(); ++i) {
 		count += listOfLists.item(i).size();
 		/*
 		if (listOfLists.item(i).size() > 1) {
 			console.log('Multiple sublist');
-			for (var j = 0; j < listOfLists.item(i).size(); ++j) {
+			for (let j = 0; j < listOfLists.item(i).size(); ++j) {
 				console.log('email address, _id, Firstname, Family Name: ' +
 					listOfLists.item(i).item(j).emailaddress, +', ' +
 					listOfLists.item(i).item(j)._id + ', ' +
@@ -259,7 +259,7 @@ angular.module('ttc').controller('FeeManagementController', ['$scope', '$modalIn
 
 			var StartOfSeason = moment('2017-04-01');
 
-			for (var i = 0; i < members.length; ++i) {
+			for (let i = 0; i < members.length; ++i) {
 
 				// Ensure that every member document has a 'paid' field
 				if (typeof members[i].paid === 'undefined') {
@@ -291,7 +291,7 @@ angular.module('ttc').controller('FeeManagementController', ['$scope', '$modalIn
 						}
 
 						// Include those members using the same emailaddress or familyemailaddress
-						for (var j = i + 1; j < members.length; ++j)
+						for (let j = i + 1; j < members.length; ++j)
 							if (members[i].emailaddress.toLowerCase() === members[j].emailaddress.toLowerCase() ||
 								(members[i].familyemailaddress && members[i].familyemailaddress.toLowerCase() === members[j].emailaddress.toLowerCase()) ||
 								(members[j].familyemailaddress && (members[i].emailaddress.toLowerCase() === members[j].familyemailaddress.toLowerCase()))
@@ -308,17 +308,17 @@ angular.module('ttc').controller('FeeManagementController', ['$scope', '$modalIn
 
 			// Now create the accounts from the listOfLists
 			$scope.accounts = [];
-			for (var i = 0; i < listOfLists.size(); ++i) {
+			for (let i = 0; i < listOfLists.size(); ++i) {
 				// The name of the oldest person is to be the name of the account
 				var oldest = 0;
-				for (var j = 1; j < listOfLists.item(i).size(); ++j)
+				for (let j = 1; j < listOfLists.item(i).size(); ++j)
 					if (listOfLists.item(i).item(j).dob < listOfLists.item(i).item(oldest).dob)
 						oldest = j;
 
 				// If everyone in a sublist is flagged as paid, 
 				// then the Account as a whole is flagged as paid
 				var paid = true;
-				for (var j = 0; j < listOfLists.item(i).size(); ++j) {
+				for (let j = 0; j < listOfLists.item(i).size(); ++j) {
 					paid = paid && listOfLists.item(i).item(j).paid;
 				}
 
@@ -330,7 +330,7 @@ angular.module('ttc').controller('FeeManagementController', ['$scope', '$modalIn
 					var execs = 0; // Execs get a discount
 					var lifetimes = 0; // Lifetime members pay no fees
 
-					for (var j = 0; j < listOfLists.item(i).size(); ++j) {
+					for (let j = 0; j < listOfLists.item(i).size(); ++j) {
 
 						// Students get special handling
 						if (listOfLists.item(i).item(j).student) {
@@ -381,7 +381,7 @@ angular.module('ttc').controller('FeeManagementController', ['$scope', '$modalIn
 						fees = SinglesFee;
 					}
 
-					for (var exec_i = 0; exec_i < execs; ++exec_i)
+					for (let exec_i = 0; exec_i < execs; ++exec_i)
 						fees -= SinglesFee / 2.0;
 				}
 
@@ -390,7 +390,7 @@ angular.module('ttc').controller('FeeManagementController', ['$scope', '$modalIn
 
 				// Create the tooltips for the account
 				var tooltip = "";
-				for (var j = 0; j < listOfLists.item(i).size(); ++j) {
+				for (let j = 0; j < listOfLists.item(i).size(); ++j) {
 					tooltip += _.capitalize(listOfLists.item(i).item(j).firstname + ' ' +
 						listOfLists.item(i).item(j).familyname + ', DoB: ' +
 						listOfLists.item(i).item(j).dob);
@@ -415,25 +415,17 @@ angular.module('ttc').controller('FeeManagementController', ['$scope', '$modalIn
 		}
 
 		MemberService.getAllMembers()
-			.then(function (data) {
-				$scope.members = data;
-				GenerateAccounts($scope.members);
-			})
-			.catch(function (err) {
-				$window.alert(err);
-			});
+			.then(GenerateAccounts)
+			.catch($window.alert);
 
-		$scope.Toggle = function (account) {
-			for (var i = 0; i < account.members.length; ++i) {
+		$scope.Toggle = account => {
+			for (let i = 0; i < account.members.length; ++i) {
 				account.members[i].paid = !account.paid;
-				MemberService.saveMember(account.members[i], function (err) {
-					if (err)
-						$window.alert(err);
-				});
+				MemberService.saveMember(account.members[i])
+					.catch($window.alert);
 			}
 		}
 
-		$scope.Close = function () {
-			$modalInstance.dismiss('No');
-		}
+		$scope.Close = () => $modalInstance.dismiss('No');
+
 	}]);

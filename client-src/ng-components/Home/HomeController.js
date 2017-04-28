@@ -8,25 +8,21 @@ angular.module('ttc')
 			MemberService.countMembers()
 				.then(data => $scope.MemberCount = data);
 
-			$scope.onClick = function (points, evt) {
+			$scope.onClick = (points, evt) => {
 				console.log(points, evt);
 			};
 
 			NewsItemService.getAll()
-				.then(function (NewsItems) { $scope.NewsItems = NewsItems; });
+				.then(newsItems => $scope.NewsItems = newsItems);
 
 			// Opens the Mission & Values modal
-			$scope.openMissionAndValues = function () {
+			$scope.openMissionAndValues = () => {
 				var modalInstance = $modal.open({
 					templateUrl: '/client-build/ng-templates/mission-and-values.html',
 					controller: 'MissionAndValuesController',
 					size: '',
 					backdrop: true,
 					resolve: {}
-				});
-
-				modalInstance.result.then(() => {
-				}, () => {
 				});
 			};
 		}]);
@@ -35,7 +31,7 @@ angular.module('ttc')
 	.controller('MissionAndValuesController', ['$scope', '$modalInstance',
 		function ($scope, $modalInstance) {
 
-			$scope.Close = function () {
+			$scope.Close = () => {
 				$modalInstance.dismiss('cancel');
 			};
 		}]);
