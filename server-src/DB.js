@@ -16,10 +16,7 @@ mongoose.connect(process.env.MONGO_DB);
 
 // Setup the Mongoose models
 const MemberSchema = new mongoose.Schema({
-	emailaddress: {
-		type: String,
-		lowercase: true
-	},
+	emailaddress: { type: String, lowercase: true },
 	password: String,
 	firstname: String,
 	familyname: String,
@@ -78,7 +75,7 @@ const getAllEmailAddresses = () => Member.find()
 const findMember = (_id) => Member.findOne({ _id }, '-_id -password');
 
 // Make persistant changes to a member's information
-const persistMemberChange = (member) => Member.findByIdAndUpdate(member._id, member, MONGOOSE_UPDATE_OPTIONS);
+const persistMemberChange = member => Member.findByIdAndUpdate(member._id, member, MONGOOSE_UPDATE_OPTIONS);
 
 const loginMember = (login) =>
 

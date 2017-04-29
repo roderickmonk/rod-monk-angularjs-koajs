@@ -1,25 +1,13 @@
 "use strict";
 
-const util = require('../assets/js/util.js');
-
 angular.module('ttc').factory('MemberService', ['$http', 'UserService', ($http, UserService) => {
 
 	const httpHeaders = () => ({ headers: { 'x-auth': UserService.getToken() } });
 
 	return {
 
-		getAllMembers: () =>
-
-			$http.get('/api/member', httpHeaders())
-				.then(result =>
-					// Do some cleaning
-					result.data.map(member => {
-						member.firstname = _.capitalize(member.firstname);
-						member.familyname = _.capitalize(member.familyname);
-						member.primaryphone = util.normalizePhoneNumber(member.primaryphone);
-						member.alternativephone = util.normalizePhoneNumber(member.alternativephone);
-						return member;
-					})),
+		getAllMembers: () => $http.get('/api/member', httpHeaders())
+			.then(response => response.data),
 
 		getAllEmailAddresses: () => $http.get('/api/member/email-addresses', httpHeaders())
 			.then(response => response.data),

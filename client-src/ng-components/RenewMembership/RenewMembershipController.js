@@ -37,18 +37,6 @@ angular.module('ttc').controller('renewMembershipCtrl', ['$scope', 'placesServic
 			$modalInstance.dismiss('No');
 		};
 
-		$scope.normalizeCanadianPostalCodes = () => {
-			$scope.member.postcode = $scope.member.postcode.replace(' ', '').toUpperCase();
-		};
-
-		$scope.normalizePrimaryPhoneNumber = () => {
-			$scope.member.primaryphone = normalizePhoneNumber($scope.member.primaryphone);
-		};
-
-		$scope.normalizeAlternativePhoneNumber = () => {
-			$scope.member.alternativephone = normalizePhoneNumber($scope.member.alternativephone);
-		};
-
 		// Opens the Mission & Values modal
 		$scope.openReleaseOfLiability = () => {
 			console.log('Open Modal');
@@ -59,11 +47,9 @@ angular.module('ttc').controller('renewMembershipCtrl', ['$scope', 'placesServic
 				backdrop: true,
 				resolve: {}
 			});
-
-			//modalInstance.result.then(() => { }, () => { });
 		};
 
-		// Opens the Mission & Values modal
+		// Opens the Communications modal
 		$scope.openCommunicationsConsent = () => {
 			var modalInstance = $modal.open({
 				templateUrl: '/client-build/ng-templates/communications-consent.html',
@@ -72,11 +58,9 @@ angular.module('ttc').controller('renewMembershipCtrl', ['$scope', 'placesServic
 				backdrop: true,
 				resolve: {}
 			});
-
-			//modalInstance.result.then(() => { }, () => { });
 		};
 
-		// Opens the Mission & Values modal
+		// Opens the Photo consent modal
 		$scope.openPhotographConsent = () => {
 			var modalInstance = $modal.open({
 				templateUrl: '/client-build/ng-templates/photograph-consent.html',
@@ -85,11 +69,9 @@ angular.module('ttc').controller('renewMembershipCtrl', ['$scope', 'placesServic
 				backdrop: true,
 				resolve: {}
 			});
-
-			//modalInstance.result.then(() => { }, () => { });
 		};
 
-		// Opens the Mission & Values modal
+		// Opens the Fees modal
 		$scope.openFeeStructure = () => {
 			var modalInstance = $modal.open({
 				templateUrl: '/client-build/ng-templates/fees.html',
@@ -98,10 +80,7 @@ angular.module('ttc').controller('renewMembershipCtrl', ['$scope', 'placesServic
 				backdrop: true,
 				resolve: {}
 			});
-
-			//modalInstance.result.then(() => { }, () => { });
 		};
-
 	}]);
 
 angular.module('ttc')

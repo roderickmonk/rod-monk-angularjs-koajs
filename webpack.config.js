@@ -3,6 +3,9 @@ const
 	path = require('path'),
 	HtmlWebpackPlugin = require('html-webpack-plugin'),
 	merge = require('webpack-merge'),
+	ManifestPlugin = require('webpack-manifest-plugin'),
+	ExtractTextPlugin = require('extract-text-webpack-plugin'),
+	parts = require('./webpack.parts'),
 
 	PATHS = {
 		app: path.join(__dirname, 'client-src'),
@@ -10,42 +13,66 @@ const
 	};
 
 /*
-	commonConfig = merge([
-		parts.extractCSS({ use: 'css-loader' }),
-		parts.loadCSS(),
-	]);
-*/
-
 module.exports = {
-	// Entries have to resolve to files! They rely on Node
-	// convention by default so if a directory contains *index.js*,
-	// it resolves to that.
 	entry: {
 		app: path.join(PATHS.app, 'index.js'),
-		//app: PATHS.app
+		vendor: [
+			'angular', 'angular-route', 'angular-messages', 'angular-sanitize',
+			'angular-cookies', 'angular-animate', 'lodash', 'moment'
+		]
 	},
 	output: {
-		path: PATHS.build,
-		filename: 'bundle.js',
+		filename: '[name].js',
+		path: path.resolve(__dirname, 'dist')
+	},
+
+	module: {
+		rules: [{
+			test: /\.css$/,
+			use: ExtractTextPlugin.extract({
+				use: 'css-loader'
+			})
+		}]
 	},
 	plugins: [
-		new HtmlWebpackPlugin({
-			title: 'TTC Webpack',
+		new ExtractTextPlugin('styles.css'),
+	]
+}
+*/
+
+//const commonConfig = merge([parts.loadCSS()]);
+
+module.exports = {
+	entry: {
+		app: path.join(PATHS.app, 'index.js'),
+		vendor: [
+			'angular', 'angular-route', 'angular-messages', 'angular-sanitize',
+			'angular-cookies', 'angular-animate', 'lodash', 'moment'
+		]
+	},
+	output: {
+		filename: '[name].js',
+		path: path.resolve(__dirname, 'dist')
+	},
+	plugins: [
+		new HtmlWebpackPlugin({ title: 'TTC Webpack' }),
+		new webpack.ProvidePlugin({ $: "jquery", jQuery: "jquery" }),
+		new ManifestPlugin(),
+		new webpack.optimize.CommonsChunkPlugin({
+			name: 'vendor',
+			minChunks: module =>
+				// this assumes your vendor imports exist in the node_modules directory
+				module.context && module.context.indexOf(['node_modules/jquery']) !== -1
 		}),
-		new webpack.ProvidePlugin({
-			$: "jquery",
-			jQuery: "jquery"
-		}),
+		//CommonChunksPlugin will now extract all the common modules from vendor and main bundles
+		new webpack.optimize.CommonsChunkPlugin({
+			name: 'manifest'
+		})
 	],
 	module: {
 		rules: [
 			{
 				test: [/\.js$/],
-				// **Restrictions**
-				// Restrict matching to a directory. This
-				// also accepts an array of paths or a function.
-				// The same applies to `exclude`.
-				//include: path.join(__dirname, 'app'),
 				include: [
 					path.resolve(__dirname, 'client-src'),
 				],
@@ -53,8 +80,6 @@ module.exports = {
 					/node_modules/,
 					/\.spec\.js$/
 				],
-				// **Actions**
-				// Apply loaders the matched files.
 				use: [{
 					loader: 'babel-loader',
 					options: {
@@ -63,7 +88,9 @@ module.exports = {
 						]
 					}
 				}]
+
 			},
 		],
 	}
+
 }

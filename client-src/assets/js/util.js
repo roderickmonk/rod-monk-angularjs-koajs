@@ -1,7 +1,7 @@
 "use strict";
 
-		// Normalize to the form 999-999-8888
-export function normalizePhoneNumber(phonenumber) {
+// Normalize to the form 999-999-9999
+export const normalizePhoneNumber = phonenumber => {
 
 	var phoneDigits = '';
 

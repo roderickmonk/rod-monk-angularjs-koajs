@@ -1,5 +1,7 @@
 "use strict";
 
+const util = require('../../assets/js/util.js');
+
 // editPersonalInfoCtrl Controller
 angular.module('ttc').controller('editPersonalInfoCtrl', ['$scope', 'placesService', 'MemberService', '$window', '$modalInstance', '$modal',
 	function ($scope, placesService, MemberService, $window, $modalInstance, $modal) {
@@ -40,11 +42,11 @@ angular.module('ttc').controller('editPersonalInfoCtrl', ['$scope', 'placesServi
 		};
 
 		$scope.normalizePrimaryPhoneNumber = function () {
-			$scope.member.primaryphone = normalizePhoneNumber($scope.member.primaryphone);
+			$scope.member.primaryphone = util.normalizePhoneNumber($scope.member.primaryphone);
 		};
 
 		$scope.normalizeAlternativePhoneNumber = function () {
-			$scope.member.alternativephone = normalizePhoneNumber($scope.member.alternativephone);
+			$scope.member.alternativephone = util.normalizePhoneNumber($scope.member.alternativephone);
 		};
 
 		// Opens the Mission & Values modal

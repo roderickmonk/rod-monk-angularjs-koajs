@@ -1,4 +1,5 @@
 "use strict";
+
 // General purpose modules
 const util = require('util');
 const path = require("path");
@@ -17,6 +18,7 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const json = require('koa-json');
+const formParser = require('koa-router-form-parser');
 
 // Project specific modules
 const DB = require('./DB');
@@ -32,6 +34,8 @@ app.use(bodyParser({ strict: false }));
 app.use(json());
 
 app.use(serve('.', { index: 'client-build/index.html' }));
+
+app.use(formParser());
 
 // Koa error handler
 app.use(async (ctx, next) => {
@@ -129,30 +133,20 @@ router.get('/newsitem/:id/files', async (ctx, next) => {
     }
 });
 
-router.get('/newsitem/image-upload', async (ctx, next) => {
+router.post('/newsitem/image-upload', async (ctx, next) => {
 
-    const form = new formidable.IncomingForm();
-    form.parse(ctx.request, (err, fields, files) => {
-        console.log('inspect:\n', util.inspect({ fields: fields, files: files }));
-        console.log('filename: ', files.file.name);
-    });
-    form.on('progress', (bytesReceived, bytesExpected) => {
-        const percent_complete = (bytesReceived / bytesExpected) * 100;
-        console.log(percent_complete.toFixed(2));
-    });
-    form.on('error', function (err) {
-        console.error(err);
-    });
-    form.on('end', (fields, files) => {
-        /* Temporary location of our uploaded file */
-        const temp_path = this.openedFiles[0].path;
-        const file_name = this.openedFiles[0].name;
-        console.log("request.headers['newsitemid']: ", ctx.request.header['newsitemid']);
-        console.log("request.headers: ", JSON.stringify(ctx.request.headers, null, 4));
-        GridFS.saveFileToDb(this.openedFiles[0].path, this.openedFiles[0].name, 'newsitem', ctx.request.header['newsitemid'])
-            .then(() => ctx.status = 200)
-            .catch(ctx.throw);
-    });
+    try {
+        const
+            form = await ctx.formParse({ onlyPathReturned: false }),
+            filename = form.files.file.name,
+            path = form.files.file.path;
+
+        await GridFS.saveFileToDb(path, filename, 'newsitem', ctx.request.header['newsitemid']);
+        ctx.body = { code: 200, data: form };
+
+    } catch (e) {
+        ctx.throw(err);
+    }
 });
 
 router.delete('/newsitem/:id', async (ctx, next) =>

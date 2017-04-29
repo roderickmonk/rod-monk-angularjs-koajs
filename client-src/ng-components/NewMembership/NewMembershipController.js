@@ -1,5 +1,7 @@
 "use strict";
 
+const util = require('../../assets/js/util.js');
+
 // Join Controller
 angular.module('ttc').controller('NewMembershipController', ['$scope', 'placesService', '$modalInstance', '$window', '$modal', 'MemberService',
 	function ($scope, placesService, $modalInstance, $window, $modal, MemberService) {
@@ -32,20 +34,20 @@ angular.module('ttc').controller('NewMembershipController', ['$scope', 'placesSe
 			$modalInstance.dismiss('No');
 		}
 
-		$scope.normalizeCanadianPostalCodes = function () {
+		$scope.normalizeCanadianPostalCodes = () => {
 			$scope.member.postcode = $scope.member.postcode.replace(' ', '').toUpperCase();
 		}
 
-		$scope.normalizePrimaryPhoneNumber = function () {
-			$scope.member.primaryphone = normalizePhoneNumber($scope.member.primaryphone);
+		$scope.normalizePrimaryPhoneNumber = () => {
+			$scope.member.primaryphone = util.normalizePhoneNumber($scope.member.primaryphone);
 		}
 
-		$scope.normalizeAlternativePhoneNumber = function () {
-			$scope.member.alternativephone = normalizePhoneNumber($scope.member.alternativephone);
+		$scope.normalizeAlternativePhoneNumber = () => {
+			$scope.member.alternativephone = util.normalizePhoneNumber($scope.member.alternativephone);
 		};
 
 		// Opens the Mission & Values modal
-		$scope.openReleaseOfLiability = function () {
+		$scope.openReleaseOfLiability = () => {
 			var modalInstance = $modal.open({
 				templateUrl: '/client-build/ng-templates/release-of-liability-waiver-and-claims.html',
 				controller: 'ReleaseOfLiabilityController',
@@ -54,8 +56,8 @@ angular.module('ttc').controller('NewMembershipController', ['$scope', 'placesSe
 				resolve: {}
 			});
 
-			modalInstance.result.then(function () {
-			}, function () {
+			modalInstance.result.then(() => {
+			}, () => {
 			});
 		};
 

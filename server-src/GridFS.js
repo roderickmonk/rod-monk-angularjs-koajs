@@ -34,42 +34,38 @@ const saveFileToDb = (filepath, filename, category, collection_id) => {
 	});
 }
 
-const retrieveFileFromDb = (file) => {
+const retrieveFileFromDb = (file) => new Promise((resolve, reject) => {
 
-	assert(_.isObject(file), 'file not an object');
+	// Create a file with a name of the form 'file._id.<ext>', where <ext> is the extension of the original file
+	let filepath = `./newsItemPictures/${file._id}.${file.filename.substr(file.filename.lastIndexOf('.') + 1)}`;
 
-	return new Promise((resolve, reject) => {
+	// Check whether the file already exists
+	fs.open(filepath, 'r', (err, fd) => {
+		if (!err) {
+			// File already exits
+			fs.closeSync(fd);
+			resolve(null);
+		}
+		else {
+			console.log ('filepath: ', filepath);
+			// File does not exist...create it
+			let fs_write_stream = fs.createWriteStream(filepath);
 
-		// Create a file with a name of the form 'file._id.<ext>', where <ext> is the extension of the original file
-		let filepath = file._id + '.' + file.filename.substr(file.filename.lastIndexOf('.') + 1);
+			let gfs = Grid(conn.db);
 
-		// Check whether the file already exists
-		fs.open(filepath, 'r', (err, fd) => {
-			if (!err) {
-				// File already exits
-				fs.closeSync(fd);
+			//read from mongodb
+			let readstream = gfs.createReadStream({ _id: file._id });
+			readstream.pipe(fs_write_stream);
+			fs_write_stream.on('close', () => {
 				resolve(null);
-			}
-			else {
-				// File does not exist...create it
-				let fs_write_stream = fs.createWriteStream(filepath);
-
-				let gfs = Grid(conn.db);
-
-				//read from mongodb
-				let readstream = gfs.createReadStream({ _id: file._id });
-				readstream.pipe(fs_write_stream);
-				fs_write_stream.on('close', () => {
-					resolve(null);
-				});
-				fs_write_stream.on('error', () => {
-					err = 'file creation error: ' + filepath;
-					reject(err);
-				});
-			}
-		});
+			});
+			fs_write_stream.on('error', () => {
+				err = 'file creation error: ' + filepath;
+				reject(err);
+			});
+		}
 	});
-}
+});
 
 const removeFileFromDb = (file) => {
 

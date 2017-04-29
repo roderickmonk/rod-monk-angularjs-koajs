@@ -8,12 +8,16 @@ angular.module('ttc').controller('MemberTableController', ['$scope', 'MemberServ
 		$scope.notrenewedonly = false;
 		$scope.allemailaddresses = [];
 
-		MemberService.getAllEmailAddresses()
-			.then(emailaddresses => $scope.allemailaddresses = emailaddresses)
-			.catch($window.alert);
-
+		/*
+				MemberService.getAllEmailAddresses()
+					.then(emailaddresses => $scope.allemailaddresses = emailaddresses)
+					.catch($window.alert);
+		*/
 		MemberService.getAllMembers()
-			.then(members => $scope.members = members)
+			.then(members => {
+				$scope.members = members;
+				$scope.allemailaddresses = members.map(member => member.emailaddress);
+			})
 			.catch($window.alert);
 
 		$scope.TogglePaid = member => {
@@ -34,8 +38,11 @@ angular.module('ttc').controller('MemberTableController', ['$scope', 'MemberServ
 
 		$scope.UpdateFamilyEmailAddress = member => {
 
+			console.log ('member: ', member);
+
 			if (member.familyemailaddress == "" || $scope.allemailaddresses.indexOf(member.familyemailaddress) >= 0)
 				MemberService.saveMember(member)
+					.then(response => console.log('Family Email Address Updated: ', response.data))
 					.catch($window.alert);
 			else
 				$window.alert('Family Email Address is Unknown - Not Saved');

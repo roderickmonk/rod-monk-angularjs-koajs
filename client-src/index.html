@@ -7,16 +7,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 	<link rel="icon" type="image/ico" href="/client-build/assets/images/Tennis_Ball.ico" />
 
-	<!-- Latest compiled and minified Bootstrap CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
-	<!-- Optional theme -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.css">
+	<link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" href="/client-build/assets/css/custom.css">
 	<link rel="stylesheet" href="/client-build/assets/css/awesome-bootstrap-checkbox.css">
 	<link rel="stylesheet" href="/client-build/assets/css/angular-busy.css">
-	<link rel="stylesheet" href="/client-build/assets/css/angular-chart.min.css">
-	<link rel="stylesheet" href="node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css" />
+	<link rel="stylesheet" href="/node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css" />
 
 	<title>Tsawwassen Tennis Club Website</title>
 	<meta NAME="description" CONTENT="tennis, club, private, tennis training, reasonable fees, league tennis, social tennis, competitive tennis">
@@ -160,14 +156,16 @@
       "logo": "https://www.tsawwassentennis.club/client-build/assets/images/hanging_tennis_ball.jpeg"
     }
 	</script>
-	<script src="node_modules/moment/min/moment.min.js"></script>
-	<script src="/client-build/bundle.js"></script>
+
+	<script type="text/javascript" src="dist/manifest.js"></script>
+	<script type="text/javascript" src="dist/vendor.js"></script>
+	<script type="text/javascript" src="dist/app.js"></script>
 
 	<script>
-			angular.element(document).ready(function () {
-				console.log('Starting Angular');
-				angular.bootstrap(document, ['ttc']);
-			});
+		angular.element(document).ready(function () {
+			console.log('Starting Angular');
+			angular.bootstrap(document, ['ttc']);
+		});
 	</script>
 </body>
 
