@@ -67,12 +67,12 @@ const removeNewsItem = (newsitemid) => NewsItem.findOneAndRemove({ _id: newsitem
 
 const countMembers = () => new Promise((resolve) => Member.find().then(members => resolve(members.length)));
 
-const getMembers = () => Member.find({}, '-_id -password');
+const getMembers = () => Member.find({}, '-password');
 
 const getAllEmailAddresses = () => Member.find()
 	.then(members => members.map(member => member.emailaddress));
 
-const findMember = (_id) => Member.findOne({ _id }, '-_id -password');
+const findMember = (_id) => Member.findOne({ _id }, '-password');
 
 // Make persistant changes to a member's information
 const persistMemberChange = member => Member.findByIdAndUpdate(member._id, member, MONGOOSE_UPDATE_OPTIONS);
@@ -151,7 +151,25 @@ const duplicateCheck = (member) => new Promise((resolve, reject) => {
 		.catch(reject);
 });
 
-const saveNewApplicant = (member) => Member(member).save();
+const saveNewApplicant = async (member) => Member(member).save();
+
+const setDoBs = async () => {
+
+	console.log('start');
+	try {
+
+		const members = await getMembers();
+
+		await Promise.all(members.map(member => {
+			member.dob = moment(member.dob).add(8, 'hours');
+			return persistMemberChange(member);
+		}));
+		console.log('end');
+
+	} catch (ex) {
+		console.log('ex: ', ex);
+	}
+}
 
 module.exports = {
 	saveNewsItem: saveNewsItem,
@@ -168,3 +186,4 @@ module.exports = {
 	duplicateCheck: duplicateCheck,
 	saveNewApplicant: saveNewApplicant,
 }
+

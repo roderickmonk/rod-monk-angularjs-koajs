@@ -65,7 +65,7 @@ router.get('/member', async (ctx, next) =>
 
 router.get('/member/:id', async (ctx, next) =>
     await DB.findMember(jwt.decode(ctx.params.id, process.env.SECRET_JWT_KEY)._id)
-        .then(member => { console.log(member), ctx.body = member; })
+        .then(member => ctx.body = member)
         .catch(ctx.throw));
 
 router.post('/member/login', async (ctx, next) =>

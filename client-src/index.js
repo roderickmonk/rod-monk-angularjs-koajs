@@ -1,7 +1,5 @@
 "use strict";
 
-//import './main.css';
-
 import 'lodash';
 import 'moment';
 import 'jquery';
@@ -41,6 +39,4 @@ import './assets/js/util.js';
 import './assets/libs/ui-bootstrap-tpls-0.13.3.min.js';
 import './assets/libs/angular-busy';
 import './assets/libs/angular-pdf.min.js';
-
-//	import 'bootstrap/dist/css/bootstrap.css';
 

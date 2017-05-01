@@ -14,7 +14,6 @@ angular.module('ttc').controller('editPersonalInfoCtrl', ['$scope', 'placesServi
 
 		MemberService.getMember()
 			.then(member => {
-				console.log('testing: ', member);
 				$scope.member = member;
 				$scope.confirmemailaddress = member.emailaddress;
 			})

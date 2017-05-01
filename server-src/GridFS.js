@@ -25,7 +25,11 @@ const saveFileToDb = (filepath, filename, category, collection_id) => {
 
 		let gfs = Grid(conn.db);
 
-		let writestream = gfs.createWriteStream({ _id: new ObjectID(), filename: filename, metadata: { collection_id: collection_id, category: category } });
+		let writestream = gfs.createWriteStream({
+			_id: new ObjectID(),
+			filename: filename,
+			metadata: { collection_id: collection_id, category: category }
+		});
 		fs.createReadStream(filepath).pipe(writestream);
 
 		writestream.on('close', (file) => {
@@ -47,7 +51,7 @@ const retrieveFileFromDb = (file) => new Promise((resolve, reject) => {
 			resolve(null);
 		}
 		else {
-			console.log ('filepath: ', filepath);
+			console.log('filepath: ', filepath);
 			// File does not exist...create it
 			let fs_write_stream = fs.createWriteStream(filepath);
 
