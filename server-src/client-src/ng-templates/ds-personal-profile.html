@@ -1,0 +1,46 @@
+<form name="memberForm" novalidate>
+	<div class="panel-group">
+		<div class="panel panel-primary">
+			<div class="panel-heading"></div>
+			<div class="panel-body">
+				<ds-firstname></ds-firstname>
+				<ds-familyname></ds-familyname>
+				<ds-emailaddress></ds-emailaddress>
+				<ds-confirm-emailaddress></ds-confirm-emailaddress>
+				<div ng-show="new_applicant">
+					<ds-password></ds-password>
+					<ds-confirmpassword></ds-confirmpassword>
+				</div>
+				<ds-student></ds-student>
+				<hr>
+				<div ng-hide="member.student">
+					<ds-familyemailaddress></ds-familyemailaddress>
+				</div>
+				<ds-address></ds-address>
+				<ds-place></ds-place>
+				<ds-postcode></ds-postcode>
+				<ds-primaryphone></ds-primaryphone>
+				<ds-alternativephone></ds-alternativephone>
+				<ds-dob></ds-dob>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h4 class="text-center">Waiver of Liability, Communications Agreement, and Photography Consent</h4>
+		</div>
+		<div class="panel-body">
+			<div class="container">
+				<div class="row">
+					<ds-liabilityagreed></ds-liabilityagreed>
+				</div>
+				<div class="row">
+					<ds-communicationsagreed></ds-communicationsagreed>
+				</div>
+				<div class="row">
+					<ds-photoagreed></ds-photoagreed>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

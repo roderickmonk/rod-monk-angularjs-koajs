@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-	<link rel="icon" type="image/ico" href="/client-build/assets/images/Tennis_Ball.ico" />
+	<link rel="icon" type="image/ico" href="assets/images/Tennis_Ball.ico" />
 
 	<!-- Styles and images go first -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
@@ -13,10 +13,10 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
 	 crossorigin="anonymous">
 
-	<link rel="stylesheet" href="/client-build/assets/css/angular-busy.css">
-	<link rel="stylesheet" href="/client-build/assets/css/awesome-bootstrap-checkbox.css">
-	<link rel="stylesheet" href="/node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css">
-	<link rel="stylesheet" href="/client-build/assets/css/custom.css">
+	<link rel="stylesheet" href="assets/css/angular-busy.css">
+	<link rel="stylesheet" href="assets/css/awesome-bootstrap-checkbox.css">
+	<link rel="stylesheet" href="assets/css/datetimepicker.css">
+	<link rel="stylesheet" href="assets/css/custom.css">
 
 	<title>Tsawwassen Tennis Club Website</title>
 	<meta NAME="description" CONTENT="tennis, club, private, tennis training, reasonable fees, league tennis, social tennis, competitive tennis">
@@ -48,7 +48,7 @@
 						</li>
 						<!-- Join the club -->
 						<li id="joinMenuItem">
-							<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('','/client-build/ng-components/NewMembership/NewMembership.html','NewMembershipController')"
+							<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('','ng-components/NewMembership/NewMembership.html','NewMembershipController')"
 							 style="cursor:pointer">Join</a>
 						</li>
 
@@ -68,24 +68,24 @@
 									<a class="btn btn-primary" ng-show="user.isLoggedIn()" data-toggle="collapse" data-target=".navbar-collapse" href="#SearchMembership">Search Membership
 									</a></li>
 								<li id="editPersonalInfoMenuItem">
-									<a class="btn btn-primary" data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('','/client-build/ng-components/EditPersonalInfo/EditPersonalInfo.html','editPersonalInfoCtrl')"
+									<a class="btn btn-primary" data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('','ng-components/EditPersonalInfo/EditPersonalInfo.html','editPersonalInfoCtrl')"
 									 style="cursor:pointer" ng-show="user.isLoggedIn()">Personal Profile
 										</a>
 								</li>
 								<li>
-									<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('sm','/client-build/ng-components/ChangePassword/ChangePassword.html','changePasswordController')"
+									<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('sm','ng-components/ChangePassword/ChangePassword.html','changePasswordController')"
 									 style="cursor:pointer" class="btn btn-primary" ng-show="user.isLoggedIn()">Change Password</a>
 								</li>
 								<li id="returningMemberMenuItem">
-									<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('','/client-build/ng-components/RenewMembership/RenewMembership.html','renewMembershipCtrl')"
+									<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('','ng-components/RenewMembership/RenewMembership.html','renewMembershipCtrl')"
 									 style="cursor:pointer" class="btn btn-primary" ng-show="user.isLoggedIn()">Renew Membership</a>
 								</li>
 								<li id="newsItemManagement">
-									<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('lg','/client-build/ng-components/NewsItemManagement/NewsItemManagement.html','NewsItemManagementController')"
+									<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('lg','ng-components/NewsItemManagement/NewsItemManagement.html','NewsItemManagementController')"
 									 style="cursor:pointer" class="btn btn-primary" ng-show="user.isLoggedIn() && !!user.getExec ()">Add News Items</a>
 								</li>
 								<li id="feeManagement">
-									<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('lg','/client-build/ng-components/FeeManagement/FeeManagement.html','FeeManagementController')"
+									<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('lg','ng-components/FeeManagement/FeeManagement.html','FeeManagementController')"
 									 style="cursor:pointer" class="btn btn-primary" ng-show="user.isLoggedIn() && user.getExec () && (	user.getExec ()=='treasurer' || 
 																							user.getExec ()=='membership' || 
 																							user.getExec ()=='president' ||
@@ -107,11 +107,11 @@
 
 					<ul class="nav navbar-nav navbar-right">
 						<li id="loginMenuItem">
-							<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('md','/client-build/ng-components/Login/Login.html','loginCtrl')"
+							<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('md','./ng-components/Login/Login.html','loginCtrl')"
 							 style="cursor:pointer" ng-hide="user.isLoggedIn()">Login</a>
 						</li>
 						<li id="logoutMenuItem">
-							<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('sm','/client-build/ng-components/Logout/Logout.html','logoutCtrl')"
+							<a data-toggle="collapse" data-target=".navbar-collapse" ng-click="open('sm','ng-components/Logout/Logout.html','logoutCtrl')"
 							 style="cursor:pointer" ng-show="user.isLoggedIn()">Logout</a>
 						</li>
 					</ul>
@@ -157,20 +157,8 @@
       "@context": "http://schema.org",
       "@type": "Organization",
       "url": "https://www.tsawwassentennis.club",
-      "logo": "https://www.tsawwassentennis.club/client-build/assets/images/hanging_tennis_ball.jpeg"
+      "logo": "https://www.tsawwassentennis.club/assets/images/hanging_tennis_ball.jpeg"
     }
-	</script>
-
-	// Pull in the JS as compiled by Webpack
-	<script type="text/javascript" src="dist/manifest.js"></script>
-	<script type="text/javascript" src="dist/vendor.js"></script>
-	<script type="text/javascript" src="dist/app.js"></script>
-
-	<script>
-		angular.element(document).ready(function () {
-			console.log('Starting Angular');
-			angular.bootstrap(document, ['ttc']);
-		});
 	</script>
 </body>
 

@@ -31,21 +31,21 @@ const bugzscout_Alarm = new BugzScout({
     forceNewBug: true
 });
 
-exports.InfoOnly = (description, extra) => {
+exports.infoOnly = (description, extra) => {
     bugzscout_InfoOnly.submit({ description: description, extra: extra, defaultMessage: 'BugzScout InfoOnly' },
         (err, res) => {
             if (err) console.log('BugzScout InfoOnly Error: ' + err);
         });
 };
 
-exports.Warning = (description, extra) => {
+exports.warning = (description, extra) => {
     bugzscout_Warning.submit({ description: description, extra: extra, defaultMessage: 'BugzScout Warning' },
         (err, res) => {
             if (err) console.log('BugzScout Warning Error: ' + err);
         });
 };
 
-exports.Alarm = (description, extra) => {
+exports.alarm = (description, extra) => {
     bugzscout_Alarm.submit({ description: description, extra: extra, defaultMessage: 'BugzScout Alarm' },
         (err, res) => {
             if (err) console.log('BugzScout Alarm Error: ' + err);

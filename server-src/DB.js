@@ -122,7 +122,7 @@ const signupMember = (member) => new Promise((resolve, reject) => {
 					.catch(reject);
 			}
 		})
-		.catch(reject);
+		.catch(()=>reject(new ApiError('Unauthorized', 401)));
 });
 
 // Assure a member's credentials

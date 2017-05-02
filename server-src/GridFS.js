@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const Grid = require('gridfs-stream');
 const ObjectID = require('mongodb').ObjectID;
-const fs = require('fs');
+const fs = require('fs-promise');
 const async = require('async');
 const _ = require('lodash');
 const assert = require('assert');
@@ -23,7 +23,7 @@ const saveFileToDb = (filepath, filename, category, collection_id) => {
 
 	return new Promise((resolve, reject) => {
 
-		let gfs = Grid(conn.db);
+		const gfs = Grid(conn.db);
 
 		let writestream = gfs.createWriteStream({
 			_id: new ObjectID(),
@@ -41,48 +41,41 @@ const saveFileToDb = (filepath, filename, category, collection_id) => {
 const retrieveFileFromDb = (file) => new Promise((resolve, reject) => {
 
 	// Create a file with a name of the form 'file._id.<ext>', where <ext> is the extension of the original file
-	let filepath = `./newsItemPictures/${file._id}.${file.filename.substr(file.filename.lastIndexOf('.') + 1)}`;
+	const filepath = `./client-build/newsItemPictures/${file._id}.${file.filename.substr(file.filename.lastIndexOf('.') + 1)}`;
 
-	// Check whether the file already exists
-	fs.open(filepath, 'r', (err, fd) => {
-		if (!err) {
-			// File already exits
-			fs.closeSync(fd);
-			resolve(null);
-		}
-		else {
-			console.log('filepath: ', filepath);
-			// File does not exist...create it
-			let fs_write_stream = fs.createWriteStream(filepath);
+	// Ensure that the target directory exists
+	fs.mkdir('./client-build/newsItemPictures')
 
-			let gfs = Grid(conn.db);
+		// Don't complain if the directory already exists
+		.catch(_.noop)
 
-			//read from mongodb
-			let readstream = gfs.createReadStream({ _id: file._id });
-			readstream.pipe(fs_write_stream);
+		// Draw the data from GridFS and create a file
+		.then(() => fs.createWriteStream(filepath))
+		.then(fs_write_stream => {
+
 			fs_write_stream.on('close', () => {
+				console.log('file retrieved');
 				resolve(null);
 			});
-			fs_write_stream.on('error', () => {
-				err = 'file creation error: ' + filepath;
+
+			fs_write_stream.on('error', (err) => {
+				console.log('file retrieve error: ', err);
 				reject(err);
 			});
-		}
+			const readstream = Grid(conn.db).createReadStream({ _id: file._id });
+			readstream.pipe(fs_write_stream);
+		})
+		.catch(reject);
+});
+
+const removeFileFromDb = (file) => new Promise((resolve, reject) => {
+
+	let gfs = Grid(conn.db);
+	gfs.remove({ _id: file._id }, (err) => {
+		err ? reject(err) : resolve(null);
 	});
 });
 
-const removeFileFromDb = (file) => {
-
-	assert(_.isObject(file), 'file not an object');
-
-	return new Promise((resolve, reject) => {
-
-		let gfs = Grid(conn.db);
-		gfs.remove({ _id: file._id }, (err) => {
-			err ? reject(err) : resolve(null);
-		});
-	});
-}
 
 const listNewsItemFiles = (newsitemid) =>
 

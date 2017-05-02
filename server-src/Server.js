@@ -33,7 +33,7 @@ const router = new Router({ prefix: '/api' });
 app.use(bodyParser({ strict: false }));
 app.use(json());
 
-app.use(serve('.', { index: 'client-build/index.html' }));
+app.use(serve('client-build/'));
 
 app.use(formParser());
 
@@ -42,6 +42,7 @@ app.use(async (ctx, next) => {
     try {
         await next();
     } catch (err) {
+        FogBugz.warning(JSON.stringify(err, null, 4), JSON.stringify(ctx.request.body, null, 4));
         ctx.status = err.status || 500;
         ctx.body = err.message;
     }
@@ -68,16 +69,31 @@ router.get('/member/:id', async (ctx, next) =>
         .then(member => ctx.body = member)
         .catch(ctx.throw));
 
-router.post('/member/login', async (ctx, next) =>
-    await DB.loginMember(ctx.request.body)
-        // Return a JWT token - required for 'Members Only'
-        .then(member => ctx.body = { jwt: jwt.encode({ _id: member._id }, process.env.SECRET_JWT_KEY), exec: member.exec })
-        .catch(ctx.throw));
+router.post('/member/login', async (ctx, next) => {
 
-router.post('/member/signup', async (ctx, next) =>
-    await DB.signupMember(ctx.request.body)
-        .then(member => ctx.body = { jwt: jwt.encode({ _id: member._id }, process.env.SECRET_JWT_KEY), exec: member.exec })
-        .catch(ctx.throw));
+    try {
+        const member = await DB.loginMember(ctx.request.body);
+
+        // Return a JWT token - required for 'Members Only'
+        ctx.body = { jwt: jwt.encode({ _id: member._id }, process.env.SECRET_JWT_KEY), exec: member.exec };
+
+    } catch (err) {
+        ctx.throw(err);
+    }
+});
+
+router.post('/member/signup', async (ctx, next) => {
+
+    try {
+        const member = await DB.signupMember(ctx.request.body);
+
+        // Return a JWT token - required for 'Members Only'
+        ctx.body = { jwt: jwt.encode({ _id: member._id }, process.env.SECRET_JWT_KEY), exec: member.exec };
+
+    } catch (err) {
+        ctx.throw(err);
+    }
+});
 
 router.put('/member/:id', async (ctx, next) => {
     const member_id = jwt.decode(ctx.params.id, process.env.SECRET_JWT_KEY)._id;
@@ -129,7 +145,7 @@ router.get('/newsitem/:id/files', async (ctx, next) => {
         await GridFS.retrieveNewsItemFiles(files);
         ctx.body = files;
     } catch (err) {
-        ctx.throw(err);
+        ctx.body = err; ctx.status = 500;
     }
 });
 
@@ -144,7 +160,7 @@ router.post('/newsitem/image-upload', async (ctx, next) => {
         await GridFS.saveFileToDb(path, filename, 'newsitem', ctx.request.header['newsitemid']);
         ctx.body = { code: 200, data: form };
 
-    } catch (e) {
+    } catch (err) {
         ctx.throw(err);
     }
 });

@@ -12,7 +12,6 @@ const
 		build: path.join(__dirname, 'client-build'),
 	};
 
-/*
 module.exports = {
 	entry: {
 		app: path.join(PATHS.app, 'index.js'),
@@ -23,39 +22,14 @@ module.exports = {
 	},
 	output: {
 		filename: '[name].js',
-		path: path.resolve(__dirname, 'dist')
-	},
-
-	module: {
-		rules: [{
-			test: /\.css$/,
-			use: ExtractTextPlugin.extract({
-				use: 'css-loader'
-			})
-		}]
+		path: path.resolve(__dirname, 'client-build')
 	},
 	plugins: [
-		new ExtractTextPlugin('styles.css'),
-	]
-}
-*/
-
-//const commonConfig = merge([parts.loadCSS()]);
-
-module.exports = {
-	entry: {
-		app: path.join(PATHS.app, 'index.js'),
-		vendor: [
-			'angular', 'angular-route', 'angular-messages', 'angular-sanitize',
-			'angular-cookies', 'angular-animate', 'lodash', 'moment'
-		]
-	},
-	output: {
-		filename: '[name].js',
-		path: path.resolve(__dirname, 'dist')
-	},
-	plugins: [
-		new HtmlWebpackPlugin({ title: 'TTC Webpack' }),
+		new HtmlWebpackPlugin({
+			hash: true,
+			template: './client-src/index.template.html',
+			inject: 'body'
+		}),
 		new webpack.ProvidePlugin({ $: "jquery", jQuery: "jquery" }),
 		new ManifestPlugin(),
 		new webpack.optimize.CommonsChunkPlugin({
@@ -92,5 +66,4 @@ module.exports = {
 			},
 		],
 	}
-
 }
