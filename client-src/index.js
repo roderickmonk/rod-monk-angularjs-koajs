@@ -1,5 +1,9 @@
 "use strict";
 
+import './assets/css/angular-busy.css';
+import './assets/css/datetimepicker.css';
+import './assets/css/awesome-bootstrap-checkbox.css';
+
 import 'lodash';
 import 'moment';
 import 'jquery';

@@ -1,10 +1,5 @@
 <div class=form-group ng-class="{ 'has-error': memberForm.dob.$touched && memberForm.dob.$invalid }"><label>Date of Birth</label>
 
-<!--
-	<input class="form-control input-sm" type=text id=dob name=dob ng-model=member.dob value="{{ member.dob | date: 'yyyy-MM-dd' }}"
-	 placeholder=YYYY-MM-DD date-field>
--->
-
 	<datetimepicker required id=dob name=dob ng-model=member.dob data-datetimepicker-config="{ minView: 'day' }">
 	</datetimepicker>
 

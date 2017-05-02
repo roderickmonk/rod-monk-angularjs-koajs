@@ -5,11 +5,9 @@ const
 	merge = require('webpack-merge'),
 	ManifestPlugin = require('webpack-manifest-plugin'),
 	ExtractTextPlugin = require('extract-text-webpack-plugin'),
-	parts = require('./webpack.parts'),
 
 	PATHS = {
 		app: path.join(__dirname, 'client-src'),
-		build: path.join(__dirname, 'client-build'),
 	};
 
 module.exports = {
@@ -25,9 +23,11 @@ module.exports = {
 		path: path.resolve(__dirname, 'client-build')
 	},
 	plugins: [
+		new ExtractTextPlugin("styles.css"),
 		new HtmlWebpackPlugin({
 			hash: true,
 			template: './client-src/index.template.html',
+			filename: 'unminified/index.html',
 			inject: 'body'
 		}),
 		new webpack.ProvidePlugin({ $: "jquery", jQuery: "jquery" }),
@@ -63,6 +63,11 @@ module.exports = {
 					}
 				}]
 
+			},
+			{
+				test: /\.css$/,
+				//exclude: helpers.root('src', 'app'),
+				use: ExtractTextPlugin.extract({ fallback: 'style-loader', loader: 'css-loader?sourceMap' }),
 			},
 		],
 	}
