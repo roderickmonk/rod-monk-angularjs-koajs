@@ -1,8 +1,8 @@
 const gulp = require('gulp');
 const concat = require('gulp-concat');
 const ngAnnotate = require('gulp-ng-annotate');
+const uglify = require('gulp-uglify');
 const changed = require('gulp-changed');
-//let minifyHTML = require('gulp-minify-html');
 const minifyHTML = require('gulp-htmlmin');
 const minifyCss = require('gulp-minify-css');
 const sourcemaps = require('gulp-sourcemaps');
@@ -36,6 +36,13 @@ gulp.task('minify-html', () => {
     .pipe(gulp.dest('./client-build'));
 });
 
+gulp.task('minify-js',  () => {
+  gulp.src(['client-build/*.js'])
+    .pipe(ngAnnotate())
+    .pipe(uglify())
+    .pipe(gulp.dest('./client-build'))
+})
+
 gulp.task('json', () => {
   gulp.src('./client-src/**/*.json')
     .pipe(gulp.dest('./client-build'));
@@ -54,6 +61,7 @@ gulp.task('watch', () => {
 });
 
 gulp.task('default', [
+  'minify-js',
   'image',
   'minify-css',
   'minify-html',
